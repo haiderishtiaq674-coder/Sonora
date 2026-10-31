@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,6 +18,22 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+
+      - name: Extract Android project
+        run: |
+          ZIP=$(find . -maxdepth 1 -iname '*native*.zip' | head -n 1)
+          if [ -z "$ZIP" ]; then
+            echo "Android project ZIP not found"
+            exit 1
+          fi
+          mkdir -p /tmp/sonora
+          unzip -q "$ZIP" -d /tmp/sonora
+          ROOT=$(find /tmp/sonora -name settings.gradle.kts -printf '%h\n' | head -n 1)
+          if [ -z "$ROOT" ]; then
+            echo "Android project files not found in ZIP"
+            exit 1
+          fi
+          cp -a "$ROOT"/. .
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
