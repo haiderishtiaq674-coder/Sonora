@@ -58,5 +58,26 @@ audio.onended=()=>{if(repeat){audio.currentTime=0;audio.play()}else next()};
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').hidden=false});$('installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').hidden=true};
 if('serviceWorker'in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 (async()=>{try{db=await openDB();await refresh()}catch(e){notify('Storage unavailable in this browser')}})();
+// SONORA FOLDER SCANNER
+const folderBtn = document.createElement('button');
+folderBtn.className = 'secondary';
+folderBtn.textContent = '▣ Scan music folder';
+folderBtn.style.marginLeft = '8px';
+document.querySelector('.actions').appendChild(folderBtn);
+
+const folderInput = document.createElement('input');
+folderInput.type = 'file';
+folderInput.accept = 'audio/*';
+folderInput.multiple = true;
+folderInput.setAttribute('webkitdirectory', '');
+folderInput.hidden = true;
+document.body.appendChild(folderInput);
+
+folderBtn.onclick = () => folderInput.click();
+
+folderInput.onchange = async () => {
+  await addFiles([...folderInput.files]);
+  folderInput.value = '';
+};
 </script>
 </body></html>
