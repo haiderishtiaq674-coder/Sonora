@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09090f"><title>Sonora — Music, discovered</title>
+<style>
+:root{color-scheme:dark;--bg:#09090f;--panel:#14141f;--muted:#9b9bad;--accent:#b9ff66}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#29204a 0,transparent 38%),var(--bg);color:#f7f5ff;font:16px system-ui,-apple-system,sans-serif}
+header{padding:24px 20px 12px;display:flex;justify-content:space-between;align-items:center}
+h1{font-size:25px;letter-spacing:-1px;margin:0}h1 span{color:var(--accent)}.tag{color:var(--muted);font-size:12px;letter-spacing:2px;margin-top:4px}
+main{padding:12px 18px 110px;max-width:760px;margin:auto}.search{display:flex;gap:8px;background:var(--panel);padding:8px;border:1px solid #292938;border-radius:18px}
+input{background:transparent;border:0;outline:0;color:white;padding:10px;min-width:0;flex:1;font:inherit}
+button{border:0;border-radius:13px;background:var(--accent);color:#15151a;font-weight:700;padding:12px 16px;font:inherit;cursor:pointer}
+.hero{margin:20px 0;padding:22px;border-radius:24px;background:linear-gradient(135deg,#24203a,#12121c 70%);border:1px solid #302b45}
+.eyebrow{color:var(--accent);font-size:11px;letter-spacing:2px;font-weight:800}.hero h2{font-size:28px;line-height:1.1;margin:10px 0}.muted{color:var(--muted);font-size:14px}
+.section{display:flex;justify-content:space-between;align-items:center;margin:24px 0 12px}.section h3{margin:0;font-size:18px}
+.chips{display:flex;gap:8px;overflow:auto}.chip{background:#191923;color:#d9d7e6;border:1px solid #292938;border-radius:30px;padding:9px 13px;white-space:nowrap}
+.results{display:grid;gap:10px}.song{display:flex;align-items:center;gap:12px;background:var(--panel);padding:12px;border-radius:16px;border:1px solid #242431}
+.art{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#a65cff,#20203c);display:grid;place-items:center;font-size:21px;flex-shrink:0}
+.song .info{flex:1;min-width:0}.song strong,.song small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.song small{color:var(--muted);margin-top:4px}.song button{padding:9px 12px}
+.player{position:fixed;bottom:0;left:0;right:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:#11111bee;backdrop-filter:blur(18px);border-top:1px solid #292938}
+.player-inner{max-width:760px;margin:auto;display:flex;align-items:center;gap:12px}.player .info{flex:1;min-width:0}.player strong,.player small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.player small{color:var(--muted)}
+iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:16px;margin-top:12px}.notice{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}a{color:var(--accent)}
+@media(min-width:650px){.results{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<header><div><h1>sonora<span>✳</span></h1><div class="tag">MUSIC, DISCOVERED</div></div><div aria-label="Profile">◉</div></header>
+<main>
+<div class="search"><input id="q" placeholder="Search songs, artists, moods…" autocomplete="off"><button id="search">Search</button></div>
+<section class="hero"><div class="eyebrow">YOUR NEXT OBSESSION</div><h2>Find the sound<br>you didn’t know yet.</h2><p class="muted">Search YouTube, play a track, and save what you love.</p></section>
+<div class="section"><h3>Explore a mood</h3></div><div class="chips">
+<button class="chip" data-q="new music 2026">New music</button><button class="chip" data-q="chill mix">Chill</button><button class="chip" data-q="lofi beats">Lo-fi</button><button class="chip" data-q="workout music">Energy</button></div>
+<div class="section"><h3 id="heading">Start exploring</h3></div><div id="results" class="results"><div class="song"><div class="art">♫</div><div class="info"><strong>Search for a song</strong><small>Choose a track to open YouTube</small></div></div></div>
+<div id="embed"></div><p class="notice">Sonora opens YouTube search and uses YouTube’s supported playback. Availability and background listening follow YouTube’s rules.</p>
+</main>
+<div class="player"><div class="player-inner"><div class="art">♫</div><div class="info"><strong id="now">Ready when you are</strong><small id="sub">Search YouTube to play music</small></div><a id="yt" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube ↗</a></div></div>
+<script>
+const $=id=>document.getElementById(id);
+function search(q){q=(q||$('q').value).trim();if(!q)return;$('q').value=q;$('heading').textContent='Search YouTube';$('results').innerHTML='';
+const row=document.createElement('div');row.className='song';const art=document.createElement('div');art.className='art';art.textContent='▶';
+const info=document.createElement('div');info.className='info';const strong=document.createElement('strong');strong.textContent='Search YouTube for “'+q+'”';const small=document.createElement('small');small.textContent='Choose a song from YouTube';info.append(strong,small);
+const btn=document.createElement('button');btn.textContent='Open';btn.onclick=()=>window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(q),'_blank','noopener');row.append(art,info,btn);$('results').append(row);
+$('now').textContent=q;$('sub').textContent='Open YouTube search';$('yt').href='https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+$('embed').innerHTML='';const p=document.createElement('p');p.className='muted';p.textContent='Choose a video in YouTube to start playback.';$('embed').append(p);}
+$('search').onclick=()=>search();$('q').addEventListener('keydown',e=>{if(e.key==='Enter')search()});document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>search(b.dataset.q));
+</script></body></html>
