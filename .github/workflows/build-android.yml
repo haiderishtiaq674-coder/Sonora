@@ -49,6 +49,9 @@ jobs:
           }
           EOF
       - name: Add missing Android library
+        - name: Fix permission callback
+          run: |
+            sed -i 's/permissions: Array<out String>/permissions: Array<String>/' app/src/main/java/com/sonora/player/MainActivity.kt
         run: |
           cat >> app/build.gradle.kts <<'EOF'
 
