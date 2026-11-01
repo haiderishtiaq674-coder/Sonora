@@ -48,7 +48,14 @@ jobs:
               }
           }
           EOF
+      - name: Add missing Android library
+        run: |
+          cat >> app/build.gradle.kts <<'EOF'
 
+          dependencies {
+              implementation("androidx.activity:activity-ktx:1.9.3")
+          }
+          EOF
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
