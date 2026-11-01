@@ -22,19 +22,12 @@ jobs:
       - name: Extract Android project
         run: |
           ZIP=$(find . -maxdepth 1 -iname '*native*.zip' | head -n 1)
-          if [ -z "$ZIP" ]; then
-            echo "Android project ZIP not found"
-            exit 1
-          fi
           mkdir -p /tmp/sonora
           unzip -q "$ZIP" -d /tmp/sonora
           ROOT=$(find /tmp/sonora -name settings.gradle.kts -printf '%h\n' | head -n 1)
-          if [ -z "$ROOT" ]; then
-            echo "Android project files not found in ZIP"
-            exit 1
-          fi
           cp -a "$ROOT"/. .
-      - name: Fix Java and Kotlin compatibility
+
+      - name: Fix Android build configuration
         run: |
           cat >> app/build.gradle.kts <<'EOF'
 
@@ -47,18 +40,16 @@ jobs:
                   jvmTarget = "17"
               }
           }
-          EOF
-      - name: Add missing Android library
-        - name: Fix permission callback
-          run: |
-            sed -i 's/permissions: Array<out String>/permissions: Array<String>/' app/src/main/java/com/sonora/player/MainActivity.kt
-        run: |
-          cat >> app/build.gradle.kts <<'EOF'
 
           dependencies {
               implementation("androidx.activity:activity-ktx:1.9.3")
           }
           EOF
+
+      - name: Fix permission callback
+        run: |
+          sed -i 's/permissions: Array<out String>/permissions: Array<String>/' app/src/main/java/com/sonora/player/MainActivity.kt
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
